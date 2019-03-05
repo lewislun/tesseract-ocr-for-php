@@ -14,12 +14,15 @@ class TesseractOCR
 		$this->image("$image");
 	}
 
-	public function run()
+	public function run($timeoutDuration=null)
 	{
 		FriendlyErrors::checkTesseractPresence($this->command->executable);
 		FriendlyErrors::checkImagePath($this->command->image);
 
-		exec("{$this->command} 2>&1", $stdout);
+		if ($timeoutDuration!=null)
+			exec("timeout $timeoutDuration {$this->command} 2>&1", $stdout);
+		else
+			exec("{$this->command} 2>&1", $stdout);
 
 		FriendlyErrors::checkCommandExecution($this->command, $stdout);
 
